@@ -1,0 +1,17 @@
+- name: Bind9 Deploy (For master_node_00)
+  hosts:  master_node_00
+  vars:
+    ansible_python_interpreter: /run/current-system/sw/bin/python
+  tasks:
+
+    - name: Deploy Bind9
+      ansible.builtin.command: "{{ item }}"
+      loop:
+        - "cp -r config /mnt/bind9/"
+        - "cp -r cache /mnt/bind9/"
+        - "cp -r records /mnt/bind9/"
+        - "docker-compose up -d"
+        #- "docker stack deploy --compose-file docker-compose.yml bind9"
+      args:
+        chdir: "/root/deployments/bind9"
+#"chdir=/root/deployments/bind9"

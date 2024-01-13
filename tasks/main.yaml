@@ -1,0 +1,6 @@
+- ansible.builtin.import_playbook: 01_storage.yaml
+- ansible.builtin.import_playbook: 02_install.yaml
+- ansible.builtin.import_playbook: 03_swarm.yaml
+- ansible.builtin.import_playbook: 04_deployments.yaml
+- ansible.builtin.import_playbook: 05_bind9-deploy.yaml
+- ansible.builtin.import_playbook: 06_webapp-deploy.yaml

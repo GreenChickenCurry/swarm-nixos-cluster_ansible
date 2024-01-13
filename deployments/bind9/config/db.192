@@ -1,0 +1,19 @@
+$TTL 2d
+
+$ORIGIN 100.168.192.in-addr.arpa. 
+
+@                       IN      SOA     stepstyle.home. root.stepstyle.home. (
+                                        5               ; serial
+                                        12h             ; refresh
+                                        15m             ; retry
+                                        3w              ; expire
+                                        2h              ; minimum ttl
+                                        )
+@                       IN      NS      ns.
+70                      IN      PTR     ns.stepstyle.home.
+
+
+99			IN      PTR     srv-prod-1.stepstyle.home.
+
+9			IN	PRT	proxmox.stepstyle.home.
+70			IN      PTR	demo.stepstyle.home.

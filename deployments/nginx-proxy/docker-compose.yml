@@ -1,0 +1,37 @@
+version: "3.8"
+
+networks:
+  webapp:
+    driver: overlay
+    external: true
+
+services:
+
+  nginx:
+    image: nginx:1.24.0
+    #image: nginx:latest
+    hostname: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./www:/var/www
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    command: /bin/bash -c "exec nginx -g 'daemon off;'"
+    networks:
+      - webapp
+    #depends_on:
+    #  - php
+    #  - mysql
+    restart: always
+
+#volumes:
+
+
+  #nginx-proxy_ssl:
+  #  driver: local
+  #  driver_opts:
+  #    type: "nfs"
+  #    o: "addr=192.168.100.70,nolock,soft,rw"
+  #    device: ":/export/nginx-proxy/ssl"

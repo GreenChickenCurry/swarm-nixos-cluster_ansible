@@ -1,0 +1,2 @@
+- include: .yml
+  when: filesystem_completed.stat.exists == False

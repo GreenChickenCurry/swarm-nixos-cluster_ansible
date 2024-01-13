@@ -1,0 +1,22 @@
+$TTL 2d
+
+$ORIGIN stepstyle.home.
+
+@			IN	SOA	ns.stepstyle.home. root.stepstyle.home. (
+					5		; serial
+					12h		; refresh
+					15m		; retry
+					3w		; expire
+					2h		; minimum ttl
+					)
+@			IN	NS	ns.stepstyle.home.
+ns			IN	A	192.168.100.70
+proxmox			IN	A	192.168.100.9
+
+webapp			IN	A	192.168.100.70
+webapp                  IN      A       192.168.100.80
+webapp                  IN      A       192.168.100.81
+
+phpmyadmin		IN	A	192.168.100.70
+phpmyadmin              IN      A       192.168.100.80
+phpmyadmin              IN      A       192.168.100.81

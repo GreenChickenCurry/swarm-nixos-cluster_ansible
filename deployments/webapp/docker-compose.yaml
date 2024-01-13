@@ -1,0 +1,117 @@
+version: "3.8"
+
+networks:
+  webapp:
+    driver: overlay
+
+services:
+
+  nginx:
+    image: nginx:1.24.0
+    #image: nginx:latest
+    #hostname: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      #- ./www:/var/www
+      #- ./nginx/nginx-config/default.conf:/etc/nginx/conf.d/default.conf
+      #- ./nginx/nginx-ssl:/etc/nginx/ssl
+      - webapp_nginx-www:/var/www
+      - webapp_nginx-config:/etc/nginx/conf.d/
+      - webapp_nginx-ssl:/etc/nginx/ssl
+    command: /bin/bash -c "exec nginx -g 'daemon off;'"
+    networks:
+      - webapp
+    depends_on:
+      - php
+      - mysql
+    restart: always
+
+  php:
+    image: php:5.6-fpm-alpine
+    #hostname: php
+    #build: ./php
+    volumes:
+      #- ./nginx/nginx-www:/var/www
+       - webapp_nginx-www:/var/www
+    networks:
+      - webapp
+    depends_on:
+      - mysql
+    restart: always
+
+  mysql:
+    image: mysql:5.7
+    #hostname: mysql
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=${DB_HOST}
+    volumes:
+      #- ./mysql/mysql-in:/docker-entrypoint-initdb.d
+      #- ./mysql/mysql-out:/var/lib/mysql
+      - webapp_mysql-in:/docker-entrypoint-initdb.d
+      - webapp_mysql-out:/var/lib/mysql
+    networks:
+      - webapp
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin:5.0
+    #hostname: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - PMA_HOST=${PMA_HOST}
+    networks:
+      - webapp
+    depends_on:
+      - mysql
+    restart: always
+
+
+volumes:
+
+
+  webapp_nginx-www:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/webapp/nginx-www"
+
+  webapp_nginx-config:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/webapp/nginx-config"
+
+  webapp_nginx-ssl:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/webapp/nginx-ssl"
+
+  webapp_mysql-in:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/webapp/mysql-in"
+
+  webapp_mysql-out:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/webapp/mysql-out"

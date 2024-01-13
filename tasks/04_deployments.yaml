@@ -1,0 +1,10 @@
+- name: Copy Deployments Folder (For master_node_00)
+  hosts: master_node_00
+  vars:
+    ansible_python_interpreter: /run/current-system/sw/bin/python
+  tasks:
+
+    - name: Copy Deployments Folder
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/deployments"
+        dest: "/root/"

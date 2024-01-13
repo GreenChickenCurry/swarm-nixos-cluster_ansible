@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+
+  bind9:
+    #container_name: dns
+    image: ubuntu/bind9:9.18-23.10_edge
+    environment:
+      - BIND9_USER=root
+      - TZ=Asia/Yekaterinburg
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    #volumes:
+    #  - ./config:/etc/bind
+    #  - ./cache:/var/cache/bind
+    #  - ./records:/var/lib/bind
+    #volumes:
+    #  - type: volume
+    #    source: nfsex
+    #    target: /nfs
+    #    volume:
+    #      nocopy: true
+    networks:
+      - bind9
+    volumes:
+      - bind9_config:/etc/bind
+      - bind9_cache:/var/cache/bind
+      - bind9_records:/var/lib/bind
+    restart: always
+    #deploy:
+    #  mode: replicated
+    #  replicas: 3
+
+networks:
+  bind9:
+    driver: bridge
+    #external: true
+
+volumes:
+  bind9_config:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/bind9/config"
+
+  bind9_cache:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/bind9/cache"
+
+  bind9_records:
+    driver: local
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.70,nolock,soft,rw"
+      device: ":/export/bind9/records"
